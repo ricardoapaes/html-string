@@ -11,7 +11,7 @@ use Like\Util\HtmlString;
 
 class WordwrapTest extends \PHPUnit_Framework_TestCase {
 
-	public function testWordwrapCutFalse1() {
+	public function testWordwrap1() {
 		$wordWrapArray = HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrapArray(48,true);
 		$this->assertEquals(2, count($wordWrapArray));
 		$this->assertEquals(["<b><d>Pizza <h>Metro -- <b>FRANGO</b> <e>CATUPIRY</e> -- CALABRESA -- B</h></d></b>","<b><d><h>orda</h> CHOCOLATE PRETO NO BRANCO R$ 8,90</d></b>"], $wordWrapArray);
@@ -19,7 +19,7 @@ class WordwrapTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals("<b><d>Pizza <h>Metro -- <b>FRANGO</b> <e>CATUPIRY</e> -- CALABRESA -- B</h></d></b>\n<b><d><h>orda</h> CHOCOLATE PRETO NO BRANCO R$ 8,90</d></b>", HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrap(48,"\n",true));
 	}
 
-	public function testWordwrapCutFalse2() {
+	public function testWordwrap2() {
 		$wordWrapArray = HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrapArray(24,true);
 		$this->assertEquals(4, count($wordWrapArray));
 		$this->assertEquals([
@@ -35,7 +35,7 @@ class WordwrapTest extends \PHPUnit_Framework_TestCase {
 			"<b><d>BRANCO R$ 8,90</d></b>", HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrap(24,"\n",true));
 	}
 
-	public function testWordwrapCutFalse3() {
+	public function testWordwrap3() {
 		$wordWrapArray = HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrapArray(10,true);
 		$this->assertEquals(9, count($wordWrapArray));
 		$this->assertEquals([
@@ -61,7 +61,7 @@ class WordwrapTest extends \PHPUnit_Framework_TestCase {
 			"<b><d>$ 8,90</d></b>", HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrap(10,"\n",true));
 	}
 
-	public function testWordwrapCutFalse4() {
+	public function testWordwrap4() {
 		$wordWrapArray = HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrapArray(255,true);
 		$this->assertEquals(1, count($wordWrapArray));
 		$this->assertEquals([HtmlStringTest::EXEMPLO], $wordWrapArray);

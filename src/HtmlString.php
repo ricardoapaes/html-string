@@ -30,31 +30,32 @@ class HtmlString {
 	/**
 	 * @param int $width
 	 * @param string $break
-	 * @param bool $cut
+	 * @param bool $exact
 	 * @return string
 	 */
-	public function wordwrap($width, $break="\n", $cut=true) {
-		return join($break, $this->wordwrapArray($width, $cut));
+	public function wordwrap($width, $break="\n", $exact=true) {
+		return join($break, $this->wordwrapArray($width, $exact));
 	}
 
 	/**
 	 * @param int $width
-	 * @param bool $cut
+	 * @param bool $exact
 	 * @return array
 	 */
-	public function wordwrapArray($width, $cut=true) {
+	public function wordwrapArray($width, $exact=true) {
 		$linhas = [];
 
 		$nrLinhas = ceil($this->strlen() / $width);
 		$range = range(0, $nrLinhas-1);
+		$diff = 0;
 
 		foreach($range as $linha) {
 			$start = $linha > 0 ? ($linha * $width) : 0;
-			$linhas[] = $this->substr($start, $width);
-		}
+			if($diff > 0) {
+				$start -= $diff;
+			}
 
-		if(!$cut) {
-			$linhas[] = "NOCUT";
+			$linhas[] = $this->substr($start, $width, $exact,$diff);
 		}
 
 		return $linhas;
@@ -63,9 +64,31 @@ class HtmlString {
 	/**
 	 * @param int $start
 	 * @param int $length
+	 * @param bool $exact
+	 * @param int $diffLength
 	 * @return string
 	 */
-	public function substr($start, $length) {
+	public function substr($start, $length, $exact=true, &$diffLength=null) {
+		if(!$exact) {
+			$clean_text = $this->clear();
+			$clean_text_exact = substr($clean_text,$start,$length);
+			$clean_text_wrapped = explode("\n", wordwrap(substr($clean_text,$start), $length, "\n"))[0];
+
+			if( strlen($clean_text_exact) > strlen($clean_text_wrapped) ) {
+				$diffLength = strlen($clean_text_exact) - strlen($clean_text_wrapped);
+				$length = $length - $diffLength;
+
+				$strDiff = substr($clean_text,$start+$length, $diffLength);
+				$strDiffNoSpaces = str_replace(" ","", $strDiff);
+
+				if(strlen($strDiff) > strlen($strDiffNoSpaces)) {
+					$diffLength -= strlen($strDiff) - strlen($strDiffNoSpaces);
+				}
+			} else {
+				$diffLength = 0;
+			}
+		}
+
 		// if the plain text is shorter than the maximum length, return the whole text
 		if ($this->strlen() <= $length) {
 			return $this->string;

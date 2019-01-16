@@ -50,4 +50,22 @@ class SubstrTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals("ESA -- Bor", HtmlString::get(HtmlStringTest::EXEMPLO)->substr(40,10));
 	}
 
+	public function testSubstrNoExact1() {
+		$this->assertEquals("<b><d>Pizza</d></b>", HtmlString::get(HtmlStringTest::EXEMPLO)->substr(0,8,false));
+	}
+
+	public function testSubstrNoExact2() {
+		$diffLength = null;
+		$this->assertEquals("<h>Metro -- <b>FRANGO</b></h>", HtmlString::get(HtmlStringTest::EXEMPLO)->substr(6,20,false,$diffLength));
+		$this->assertEquals(4, $diffLength);
+	}
+
+	public function testSubstrNoExact3() {
+		$this->assertEquals("ESA --", HtmlString::get(HtmlStringTest::EXEMPLO_LIMPO)->substr(40,10,false));
+
+		$diffLength = null;
+		$this->assertEquals("ESA --", HtmlString::get(HtmlStringTest::EXEMPLO)->substr(40,10,false,$diffLength));
+		$this->assertEquals(3, $diffLength);
+	}
+
 }
