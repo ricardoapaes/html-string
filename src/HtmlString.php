@@ -45,18 +45,17 @@ class HtmlString {
 	public function wordwrapArray($width, $exact=true) {
 		$linhas = [];
 
-		$nrLinhas = ceil($this->strlen() / $width);
-		$range = range(0, $nrLinhas-1);
+		$total = $this->strlen();
 		$diff = 0;
+		$start = 0;
+		$openTags = [];
 
-		foreach($range as $linha) {
-			$start = $linha > 0 ? ($linha * $width) : 0;
-			if($diff > 0) {
-				$start -= $diff;
-			}
-
-			$linhas[] = $this->substr($start, $width, $exact,$diff);
-		}
+		do {
+			$linhas[] =
+				$this->openClosedTags($openTags) .
+				$this->substr($start, $width, $exact,$diff,$openTags);
+			$start += $width-$diff;
+		} while($start <= $total);
 
 		return $linhas;
 	}
@@ -66,9 +65,10 @@ class HtmlString {
 	 * @param int $length
 	 * @param bool $exact
 	 * @param int $diffLength
+	 * @param array $open_tags
 	 * @return string
 	 */
-	public function substr($start, $length, $exact=true, &$diffLength=null) {
+	public function substr($start, $length, $exact=true, &$diffLength=null, array &$open_tags=[]) {
 		if(!$exact) {
 			$clean_text = $this->clear();
 			$clean_text_exact = substr($clean_text,$start,$length);
@@ -98,28 +98,36 @@ class HtmlString {
 		$length += $start;
 		$total_length = 0;
 		$start_length = 0;
-		$open_tags = array();
 		$closed_tags = array();
 		$truncate = '';
-		foreach ($lines as $line_matchings) {
+		$findNext = true;
+		foreach ($lines as $k=>$line_matchings) {
 			// if there is any html-tag in this line, handle it and add it (uncounted) to the output
 			if (!empty($line_matchings[1]) && $total_length >= $start ) {
+				$addTag = true;
 				// if it's an "empty element" with or without xhtml-conform closing slash
-				if (preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $line_matchings[1], $tag_matchings)) {
+				if($tag_matchings = $this->isClosedTag($line_matchings[1])) {
 					// delete tag from $open_tags list
 					$pos = array_search($tag_matchings[1], $open_tags);
 					if ($pos !== false) {
 						unset($open_tags[$pos]);
 					} else {
-						$closed_tags[] = $tag_matchings[1];
+						if(!$truncate) {
+							$addTag = false;
+						} else {
+							$closed_tags[] = $tag_matchings[1];
+						}
 					}
 					// if tag is an opening tag
-				} else if (preg_match('/^<\s*([^\s>!]+).*?>$/s', $line_matchings[1], $tag_matchings)) {
+				} elseif($tag_matchings = $this->isOpenedTag($line_matchings[1])) {
 					// add tag to the beginning of $open_tags list
 					array_unshift($open_tags, strtolower($tag_matchings[1]));
 				}
-				// add html-tag to $truncate'd text
-				$truncate .= $line_matchings[1];
+
+				if($addTag) {
+					// add html-tag to $truncate'd text
+					$truncate .= $line_matchings[1];
+				}
 			}
 			// calculate the length of the plain text part of the line; handle entities as one character
 			$content_length = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', ' ', $line_matchings[2]));
@@ -165,22 +173,72 @@ class HtmlString {
 				$total_length += $content_length;
 			}
 			// if the maximum length is reached, get off the loop
-			if($start_length>= $length) {
+			if($total_length >= $length) {
+				$findNext = false;
 				break;
 			}
 		}
 
-		// open all closed html-tags
-		foreach($closed_tags as $tag) {
-			$truncate = '<' . $tag . '>' . $truncate;
+		if(!$findNext && isset($lines[$k+1])) {
+			$nextTag = $lines[$k+1];
+			if($tag_matchings = $this->isClosedTag($nextTag[1])) {
+				$pos = array_search($tag_matchings[1], $open_tags);
+				if ($pos !== false) {
+					unset($open_tags[$pos]);
+					$truncate .= $nextTag[1];
+				}
+			}
 		}
+
+		// open all closed html-tags
+		$truncate = $this->openClosedTags($closed_tags) . $truncate;
 
 		// close all unclosed html-tags
-		foreach ($open_tags as $tag) {
-			$truncate .= '</' . $tag . '>';
-		}
+		$truncate .= $this->closeOpenTags($open_tags);
 
 		return $truncate;
+	}
+
+	/**
+	 * @param string $tag
+	 * @return array
+	 */
+	private function isClosedTag($tag) {
+		if(preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $tag, $tag_matchings)) {
+			return $tag_matchings;
+		}
+		return [];
+	}
+
+	/**
+	 * @param string $tag
+	 * @return array
+	 */
+	private function isOpenedTag($tag) {
+		if(preg_match('/^<\s*([^\s>!]+).*?>$/s', $tag,$tag_matchings)) {
+			return $tag_matchings;
+		}
+		return [];
+	}
+
+	private function openClosedTags(array $closedTags) {
+		$string = "";
+
+		foreach($closedTags as $tag) {
+			$string = '<' . $tag . '>' . $string;
+		}
+
+		return $string;
+	}
+
+	private function closeOpenTags(array $openTags) {
+		$string = "";
+
+		foreach ($openTags as $tag) {
+			$string .= '</' . $tag . '>';
+		}
+
+		return $string;
 	}
 
 	public static function get($string) {

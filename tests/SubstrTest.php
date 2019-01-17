@@ -50,6 +50,18 @@ class SubstrTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals("ESA -- Bor", HtmlString::get(HtmlStringTest::EXEMPLO)->substr(40,10));
 	}
 
+	public function testSubstr8() {
+		$this->assertEquals("O CATUPIRY", substr(HtmlStringTest::EXEMPLO_LIMPO,20,10));
+		$this->assertEquals("O CATUPIRY", HtmlString::get(HtmlStringTest::EXEMPLO_LIMPO)->substr(20,10));
+		$this->assertEquals("<b>O</b> <e>CATUPIRY</e>", HtmlString::get(HtmlStringTest::EXEMPLO)->substr(20,10));
+	}
+
+	public function testSubstr9() {
+		$this->assertEquals(" -- CALABR", substr(HtmlStringTest::EXEMPLO_LIMPO,30,10));
+		$this->assertEquals(" -- CALABR", HtmlString::get(HtmlStringTest::EXEMPLO_LIMPO)->substr(30,10));
+		$this->assertEquals(" -- CALABR", HtmlString::get(HtmlStringTest::EXEMPLO)->substr(30,10));
+	}
+
 	public function testSubstrNoExact1() {
 		$this->assertEquals("<b><d>Pizza</d></b>", HtmlString::get(HtmlStringTest::EXEMPLO)->substr(0,8,false));
 	}
@@ -66,6 +78,11 @@ class SubstrTest extends PHPUnit_Framework_TestCase {
 		$diffLength = null;
 		$this->assertEquals("ESA --", HtmlString::get(HtmlStringTest::EXEMPLO)->substr(40,10,false,$diffLength));
 		$this->assertEquals(3, $diffLength);
+	}
+
+	public function testSubstrNoExact4() {
+		$this->assertEquals("Borda CHOCOLATE PRETO NO", HtmlString::get(HtmlStringTest::EXEMPLO_LIMPO)->substr(47,24,false));
+		$this->assertEquals("<h>Borda</h> CHOCOLATE PRETO NO", HtmlString::get(HtmlStringTest::EXEMPLO)->substr(47,24,false));
 	}
 
 }

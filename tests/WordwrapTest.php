@@ -24,15 +24,10 @@ class WordwrapTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(4, count($wordWrapArray));
 		$this->assertEquals([
 			"<b><d>Pizza <h>Metro -- <b>FRANGO</b> <e>CA</e></h></d></b>",
-			"<e>TUPIRY</e> -- CALABRESA -- B",
-			"<h>orda</h> CHOCOLATE PRETO NO ",
+			"<b><d><h><e>TUPIRY</e> -- CALABRESA -- B</h></d></b>",
+			"<b><d><h>orda</h> CHOCOLATE PRETO NO </d></b>",
 			"<b><d>BRANCO R$ 8,90</d></b>"
 		], $wordWrapArray);
-
-		$this->assertEquals("<b><d>Pizza <h>Metro -- <b>FRANGO</b> <e>CA</e></h></d></b>\n" .
-			"<e>TUPIRY</e> -- CALABRESA -- B\n" .
-			"<h>orda</h> CHOCOLATE PRETO NO \n" .
-			"<b><d>BRANCO R$ 8,90</d></b>", HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrap(24,"\n",true));
 	}
 
 	public function testWordwrap3() {
@@ -40,25 +35,15 @@ class WordwrapTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(9, count($wordWrapArray));
 		$this->assertEquals([
 			"<b><d>Pizza <h>Metr</h></d></b>",
-			"o -- <b>FRANG</b>",
-			"<b>O</b> <e>CATUPIRY</e>",
-			"<e></e> -- CALABR",
-			"ESA -- Bor",
-			"<h>da</h> CHOCOLA",
-			"TE PRETO N",
-			"O BRANCO R",
+			"<b><d><h>o -- <b>FRANG</b></h></d></b>",
+			"<b><d><h><b>O</b> <e>CATUPIRY</e></h></d></b>",
+			"<b><d><h> -- CALABR</h></d></b>",
+			"<b><d><h>ESA -- Bor</h></d></b>",
+			"<b><d><h>da</h> CHOCOLA</d></b>",
+			"<b><d>TE PRETO N</d></b>",
+			"<b><d>O BRANCO R</d></b>",
 			"<b><d>$ 8,90</d></b>"
 		], $wordWrapArray);
-
-		$this->assertEquals("<b><d>Pizza <h>Metr</h></d></b>\n" .
-			"o -- <b>FRANG</b>\n" .
-			"<b>O</b> <e>CATUPIRY</e>\n" .
-			"<e></e> -- CALABR\n" .
-			"ESA -- Bor\n" .
-			"<h>da</h> CHOCOLA\n" .
-			"TE PRETO N\n" .
-			"O BRANCO R\n" .
-			"<b><d>$ 8,90</d></b>", HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrap(10,"\n",true));
 	}
 
 	public function testWordwrap4() {

@@ -17,9 +17,10 @@ class WordWrapNoExactTest extends PHPUnit_Framework_TestCase {
 
 		$wordWrapArray = HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrapArray(48,false);
 		$this->assertEquals(2, count($wordWrapArray));
-		$this->assertEquals(["<b><d>Pizza <h>Metro -- <b>FRANGO</b> <e>CATUPIRY</e> -- CALABRESA --</h></d></b>","<b><d><h>Borda</h> CHOCOLATE PRETO NO BRANCO R$ 8,90</d></b>"], $wordWrapArray);
-
-		$this->assertEquals("<b><d>Pizza <h>Metro -- <b>FRANGO</b> <e>CATUPIRY</e> -- CALABRESA --</h></d></b>\n<b><d><h>Borda</h> CHOCOLATE PRETO NO BRANCO R$ 8,90</d></b>", HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrap(48,"\n",false));
+		$this->assertEquals([
+			"<b><d>Pizza <h>Metro -- <b>FRANGO</b> <e>CATUPIRY</e> -- CALABRESA --</h></d></b>",
+			"<b><d><h>Borda</h> CHOCOLATE PRETO NO BRANCO R$ 8,90</d></b>"
+		], $wordWrapArray);
 	}
 
 	public function testWordwrap2() {
@@ -29,15 +30,27 @@ class WordWrapNoExactTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(4, count($wordWrapArray));
 		$this->assertEquals([
 			"<b><d>Pizza <h>Metro -- <b>FRANGO</b></h></d></b>",
-			"<e>CATUPIRY</e> -- CALABRESA --",
-			"<h>Borda</h> CHOCOLATE PRETO NO",
-			"<b><d>BRANCO R$ 8,90</d></b>"
+			"<b><d><h><e>CATUPIRY</e> -- CALABRESA --</h></d></b>",
+			"<b><d><h> Borda</h> CHOCOLATE PRETO</d></b>",
+			"<b><d>NO BRANCO R$ 8,90</d></b>"
 		], $wordWrapArray);
 	}
 
 	public function testWordwrap3() {
 		$this->assertEquals("Pizza\nMetro --\nFRANGO\nCATUPIRY\n--\nCALABRESA\n-- Borda\nCHOCOLATE\nPRETO NO\nBRANCO R$\n8,90", wordwrap(HtmlStringTest::EXEMPLO_LIMPO,10,"\n",false));
-		$this->assertEquals("<b><d>Pizza</d></b>\n<h>Metro --</h>\n<b>FRANGO</b>\n<e>CATUPIRY</e>\n--\nCALABRESA\n--Borda\n</h>CHOCOLATE\nPRETO NO\nBRANCO R$\n8,90</d></b>", HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrap(10,"\n",false));
+		$this->assertEquals([
+			"<b><d>Pizza</d></b>",
+			"<b><d><h>Metro --</h></d></b>",
+			"<b><d><h><b>FRANGO</b></h></d></b>",
+			"<b><d><h><e>CATUPIRY</e></h></d></b>",
+			"<b><d><h>--</h></d></b>",
+			"<b><d><h>CALABRESA</h></d></b>",
+			"<b><d><h>-- Borda</h></d></b>",
+			"<b><d>CHOCOLATE</d></b>",
+			"<b><d>PRETO NO</d></b>",
+			"<b><d>BRANCO R$</d></b>",
+			"<b><d>8,90</d></b>"
+		], HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrapArray(10,false));
 	}
 
 }
