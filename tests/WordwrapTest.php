@@ -53,4 +53,11 @@ class WordwrapTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals(HtmlStringTest::EXEMPLO, HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrap(255,"\n",true));
 	}
 
+	public function testWordwrap5() {
+		$string = "                Sistema Service                 ";
+		$wordWrapArray = HtmlString::get($string)->wordwrapArray(48,true);
+		$this->assertEquals(1, count($wordWrapArray));
+		$this->assertEquals([$string], $wordWrapArray);
+	}
+
 }

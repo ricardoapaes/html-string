@@ -53,4 +53,15 @@ class WordWrapNoExactTest extends PHPUnit_Framework_TestCase {
 		], HtmlString::get(HtmlStringTest::EXEMPLO)->wordwrapArray(10,false));
 	}
 
+	public function testWordwrap4() {
+		$string = "                <b><d>Sistema Service</d></b>                 Rua Mato Grosso, <b>3037</b>                           Campo Mourão\PR";
+		$wordWrapArray = HtmlString::get($string)->wordwrapArray(48,false);
+		$this->assertEquals(3, count($wordWrapArray));
+		$this->assertEquals([
+			'                <b><d>Sistema Service</d></b>                ',
+			'Rua Mato Grosso, <b>3037</b>                          ',
+			'Campo Mourão\PR'
+		], $wordWrapArray);
+	}
+
 }

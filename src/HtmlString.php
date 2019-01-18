@@ -55,7 +55,7 @@ class HtmlString {
 				$this->openClosedTags($openTags) .
 				$this->substr($start, $width, $exact,$diff,$openTags);
 			$start += $width-$diff;
-		} while($start <= $total);
+		} while($start < $total);
 
 		return $linhas;
 	}
