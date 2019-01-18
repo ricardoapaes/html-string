@@ -38,6 +38,17 @@ class HtmlString {
 	}
 
 	/**
+	 * @param int $length
+	 * @param string $pad_string
+	 * @param int $pad_type
+	 * @return string
+	 */
+	public function str_pad($length, $pad_string='.', $pad_type=STR_PAD_LEFT) {
+		$length += strlen($this->string) - strlen($this->clear());
+		return str_pad($this->string, $length, $pad_string, $pad_type);
+	}
+
+	/**
 	 * @param int $width
 	 * @param bool $exact
 	 * @return array
