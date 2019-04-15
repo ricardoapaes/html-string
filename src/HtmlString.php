@@ -9,6 +9,13 @@ namespace Like\Util;
 
 class HtmlString {
 
+	const TAGS_NAO_PRECISA_FECHAR = array(
+		'<br>',
+		'<img>',
+		'<textarea>',
+		'<cut>'
+	);
+
 	/**
 	 * @var string
 	 */
@@ -226,6 +233,10 @@ class HtmlString {
 	 * @return array
 	 */
 	private function isOpenedTag($tag) {
+		if(in_array($tag, self::TAGS_NAO_PRECISA_FECHAR)){
+			return [];
+		}
+
 		if(preg_match('/^<\s*([^\s>!]+).*?>$/s', $tag,$tag_matchings)) {
 			return $tag_matchings;
 		}

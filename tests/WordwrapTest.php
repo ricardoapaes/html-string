@@ -60,4 +60,18 @@ class WordwrapTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals([$string], $wordWrapArray);
 	}
 
+	public function testNaoFecharTagListadas(){
+		$tagBr = "<br>Teste Tag br";
+		$wordWrapArray = HtmlString::get($tagBr)->wordwrapArray(48,true);
+		self::assertEquals(['<br>Teste Tag br'], $wordWrapArray);
+
+		$tagBr = "<br>Teste Tag br com quebra de linha no texto";
+		$wordWrapArray = HtmlString::get($tagBr)->wordwrapArray(25,true);
+		self::assertEquals(['<br>Teste Tag br com quebra d', 'e linha no texto'], $wordWrapArray);
+
+		$tagTextArea = "<textarea>Teste Tag TextArea";
+		$wordWrapArray = HtmlString::get($tagTextArea)->wordwrapArray(48,true);
+		self::assertEquals(['<textarea>Teste Tag TextArea'], $wordWrapArray);
+	}
+
 }
