@@ -85,4 +85,21 @@ class SubstrTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals("<h>Borda</h> CHOCOLATE PRETO NO", HtmlString::get(HtmlStringTest::EXEMPLO)->substr(47,24,false));
 	}
 
+	public function testSubstrTotal() {
+		$texto = "Tributos Totais Incidentes............................R$ 346,49";
+		$textoComTags = "<c>{$texto}</c>";
+
+		$this->assertEquals("Tributos Totais Incidentes......................", HtmlString::get($texto)->substr(0,48,true));
+		$this->assertEquals("......R$ 346,49", HtmlString::get($texto)->substr(48,48,true));
+
+		$this->assertEquals("<c>Tributos Totais Incidentes......................</c>", HtmlString::get($textoComTags)->substr(0,48,true));
+		$this->assertEquals("<c>......R$ 346,49</c>", HtmlString::get($textoComTags)->substr(48,48,true));
+
+		$this->assertEquals("Tributos Totais", HtmlString::get($texto)->substr(0,48,false));
+		$this->assertEquals("......R$ 346,49", HtmlString::get($texto)->substr(48,48,false));
+
+		$this->assertEquals("<c>Tributos Totais</c>", HtmlString::get($textoComTags)->substr(0,48,false));
+		$this->assertEquals("<c>......R$ 346,49</c>", HtmlString::get($textoComTags)->substr(48,48,false));
+	}
+
 }
