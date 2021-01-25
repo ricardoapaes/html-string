@@ -2,7 +2,7 @@
 
 /**
  * @author Ricardo Paes
- * @since 16/01/2019 às 15:56
+ * @since 16/01/2019 ï¿½s 15:56
  */
 
 namespace Like\Util\HtmlString\Tests;
@@ -54,13 +54,43 @@ class WordWrapNoExactTest extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testWordwrap4() {
-		$string = "                <b><d>Sistema Service</d></b>                 Rua Mato Grosso, <b>3037</b>                           Campo Mourão\PR";
+		$string = "                <b><d>Sistema Service</d></b>                 Rua Mato Grosso, <b>3037</b>                           Campo MourÃ£o\PR";
 		$wordWrapArray = HtmlString::get($string)->wordwrapArray(48,false);
 		$this->assertEquals(3, count($wordWrapArray));
 		$this->assertEquals([
 			'                <b><d>Sistema Service</d></b>                ',
 			'Rua Mato Grosso, <b>3037</b>                          ',
-			'Campo Mourão\PR'
+			'Campo MourÃ£o\PR'
+		], $wordWrapArray);
+	}
+
+	public function testWordwrapSemPontoVirgula() {
+		$string = "AV VINTE E NOVE DE ABRIL, 965 - QDR 0009MLOTE 00001 PLANTA 01; - CENTRO";
+		$wordWrapArray = HtmlString::get($string)->wordwrapArray(48,false);
+		$this->assertEquals(2, count($wordWrapArray));
+		$this->assertEquals([
+			'AV VINTE E NOVE DE ABRIL, 965 - QDR 0009MLOTE',
+			'00001 PLANTA 01; - CENTRO'
+		], $wordWrapArray);
+	}
+
+	public function testWordwrapPontoVirgula() {
+		$string = "AV VINTE E NOVE DE ABRIL, 965 - QDR 0009;LOTE 00001 PLANTA 01; - CENTRO";
+		$wordWrapArray = HtmlString::get($string)->wordwrapArray(48,false);
+		$this->assertEquals(2, count($wordWrapArray));
+		$this->assertEquals([
+			'AV VINTE E NOVE DE ABRIL, 965 - QDR 0009;LOTE',
+			'00001 PLANTA 01; - CENTRO'
+		], $wordWrapArray);
+	}
+
+	public function testWordwrapEspaco() {
+		$string = "AV VINTE E NOVE DE ABRIL, 965 - QDR &nbsp;LOTE 00001 PLANTA 01; - CENTRO";
+		$wordWrapArray = HtmlString::get($string)->wordwrapArray(48,false);
+		$this->assertEquals(2, count($wordWrapArray));
+		$this->assertEquals([
+			'AV VINTE E NOVE DE ABRIL, 965 - QDR &nbsp;LOTE',
+			'00001 PLANTA 01; - CENTRO'
 		], $wordWrapArray);
 	}
 

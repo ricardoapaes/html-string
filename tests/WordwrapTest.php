@@ -2,7 +2,7 @@
 
 /**
  * @author Ricardo Paes
- * @since 16/01/2019 às 15:50
+ * @since 16/01/2019 ï¿½s 15:50
  */
 
 namespace Like\Util\HtmlString\Tests;
@@ -72,6 +72,26 @@ class WordwrapTest extends \PHPUnit_Framework_TestCase {
 		$tagTextArea = "<textarea>Teste Tag TextArea";
 		$wordWrapArray = HtmlString::get($tagTextArea)->wordwrapArray(48,true);
 		self::assertEquals(['<textarea>Teste Tag TextArea'], $wordWrapArray);
+	}
+
+	public function testWordwrapPontoVirgula() {
+		$string = "AV VINTE E NOVE DE ABRIL, 965 - QDR 0009;LOTE 00001 PLANTA 01; - CENTRO";
+		$wordWrapArray = HtmlString::get($string)->wordwrapArray(48,true);
+		$this->assertEquals(2, count($wordWrapArray));
+		$this->assertEquals([
+			'AV VINTE E NOVE DE ABRIL, 965 - QDR 0009;LOTE 00',
+			'001 PLANTA 01; - CENTRO'
+		], $wordWrapArray);
+	}
+
+	public function testWordwrapEspaco() {
+		$string = "AV VINTE E NOVE DE ABRIL, 965 - QDR &nbsp;LOTE 00001 PLANTA 01; - CENTRO";
+		$wordWrapArray = HtmlString::get($string)->wordwrapArray(48,true);
+		$this->assertEquals(2, count($wordWrapArray));
+		$this->assertEquals([
+			'AV VINTE E NOVE DE ABRIL, 965 - QDR &nbsp;LOTE 0',
+			'0001 PLANTA 01; - CENTRO'
+		], $wordWrapArray);
 	}
 
 }

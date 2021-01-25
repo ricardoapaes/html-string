@@ -22,6 +22,11 @@ class HtmlString {
 	private $string;
 
 	/**
+	 * @var bool
+	 */
+	private $ignoreSpecialCharacters = true;
+
+	/**
 	 * @param string $string
 	 */
 	private function __construct($string) { $this->string = $string; }
@@ -32,6 +37,11 @@ class HtmlString {
 
 	public function strlen() {
 		return strlen($this->clear());
+	}
+
+	public function notIgnoreSpecialCharacters() {
+		$this->ignoreSpecialCharacters = false;
+		return $this;
 	}
 
 	/**
@@ -158,6 +168,12 @@ class HtmlString {
 				// the number of characters which are left
 				$leftStart = $total_length > $start ? 0 : $start-$total_length;
 				$left = ($length-$start) - $start_length;
+
+				if($this->ignoreSpecialCharacters) {
+					$truncate .= substr($line_matchings[2], $leftStart,$left);
+					break;
+				}
+
 				$entities_length = 0;
 				// search for html entities
 				if (preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|[0-9a-f]{1,6};/i', $line_matchings[2], $entities, PREG_OFFSET_CAPTURE)) {
